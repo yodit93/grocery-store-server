@@ -1,0 +1,10 @@
+{
+  "migrationPattern": "db-migrate/seed/*",
+  "driver": "pg",
+  "host": "postgres",
+  "port": 5432,
+  "database": "your_database",
+  "username": "your_user",
+  "password": "your_password",
+  "schemaTable": "schemaversion"
+}

@@ -1,0 +1,18 @@
+{
+  "name": "grocery-store-app",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "migrate": "postgrator migrate --config .postgratorrc.json",
+    "seed": "postgrator migrate --config .postgratorrc-seed.json"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.7.1",
+    "postgrator-cli": "8.1.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "yaml": "^2.5.0"
+  }
+}

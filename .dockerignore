@@ -1,0 +1,8 @@
+*.md
+docs
+node_modules
+docker-compose.yml
+**/Dockerfile
+dbeaver-*/
+.github
+.vscode

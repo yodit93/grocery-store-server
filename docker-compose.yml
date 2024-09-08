@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: your_user
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: your_database
+    volumes:
+      - ./db-migrate/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/data
+  dbeaver:
+    image: dbeaver/cloudbeaver:24.1.5
+    ports:
+      - "8080:8978"
+    environment:
+      DBEAVER_DATA_DIR: /data
+      DBEAVER_PLUGINS_DIR: /plugins
+    volumes:
+      - dbeaver-data:/data
+      - dbeaver-plugins:/plugins
+  server:
+    build: 
+      context: .
+      dockerfile: ./server/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://your_user:your_password@postgres:5432/your_database
+    depends_on:
+      - postgres
+volumes:
+  pgdata:
+  dbeaver-data:
+  dbeaver-plugins:
+

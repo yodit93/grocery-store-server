@@ -1,0 +1,437 @@
+openapi: 3.1.0
+info:
+  title: Grocery Store
+  version: 1.0.0
+  description: API documentation
+servers:
+  - url: http://localhost:3000
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      tags:
+        - System
+      responses:
+        '200':
+          description: Server and database connection are healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+        '500':
+          description: Database connection failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users:
+    get:
+      summary: Retrieve a list of users
+      tags:
+        - Users
+      responses:
+        '200':
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: Create a new user
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '201':
+          description: Created user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /users/{id}:
+    get:
+      summary: Get a user by ID
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A user object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: Update a user
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '200':
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: Delete a user
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: User deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /products:
+    get:
+      summary: Retrieve a list of products
+      tags:
+        - Products
+      responses:
+        '200':
+          description: A list of products.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '500':
+          description: Server error
+
+    post:
+      summary: Create a new product
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+  /products/{id}:
+    get:
+      summary: Get a product by ID
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A product object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: Update an existing product
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The product ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductForm'
+      responses:
+        '200':
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+
+    delete:
+      summary: Delete a product
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The product ID
+      responses:
+        '204':
+          description: Product deleted successfully
+        '404':
+          description: Product not found
+  /buys:
+    get:
+      summary: Retrieve a list of buys
+      tags:
+        - Buys
+      responses:
+        '200':
+          description: A list of buys.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Buy'
+        '500':
+          description: Server error
+
+    post:
+      summary: Record a new buy
+      tags:
+        - Buys
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuyForm'
+      responses:
+        '201':
+          description: Buy recorded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Buy'
+  /buys/{id}:
+    get:
+      summary: Get a buy by ID
+      tags:
+        - Buys
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A buy object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Buy'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: Update an existing buy record
+      tags:
+        - Buys
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The buy ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuyForm'
+      responses:
+        '200':
+          description: Buy updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Buy'
+        '404':
+          description: Buy not found
+
+    delete:
+      summary: Delete a buy record
+      tags:
+        - Buys
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The buy ID
+      responses:
+        '204':
+          description: Buy deleted successfully
+        '404':
+          description: Buy not found
+  
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The user ID.
+        name:
+          type: string
+          description: The user's name.
+        email:
+          type: string
+          format: email
+          description: The user's email address.
+    UserInput:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+    UserResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "OK"
+        message:
+          type: string
+          example: "Operation successful"
+        data:
+          $ref: '#/components/schemas/User'
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The product ID.
+        name:
+          type: string
+          description: The name of the product.
+        price:
+          type: number
+          format: float
+          description: The price of the product.
+        inventory:
+          type: integer
+          description: Number of items in stock.
+    ProductInput:
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+        inventory:
+          type: integer
+    Buy:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The buy ID.
+        user_id:
+          type: integer
+          description: ID of the user who made the purchase.
+        product_id:
+          type: integer
+          description: ID of the product bought.
+        quantity:
+          type: integer
+          description: Number of products bought.
+    BuyInput:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        product_id:
+          type: integer
+        quantity:
+          type: integer
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+  
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
