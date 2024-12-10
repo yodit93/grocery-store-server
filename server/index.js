@@ -6,13 +6,14 @@ import pg from "pg";
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import configuration from './configuration.json' with { type: "json" };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const swaggerDocument = YAML.parse(fs.readFileSync(path.join(__dirname, 'openapi.yaml'), 'utf8'));
 
 const app = express();
-const port = 3000;
+const port = configuration.port || 8000;
 
 const swaggerOptions = {
   definition: swaggerDocument,
@@ -283,11 +284,10 @@ app.delete("/buys/:id", async (req, res) => {
 });
 //#endregion
 
-app.use((err, _req, res) => {
-  console.error(err.stack);
-  res.status(500).json({ error: "Internal server error" });
+app.use((err) => {
+  throw new Error(JSON.stringify(err))
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`${configuration.welcomeMessage}. Server is running on port ${port}`);
 });

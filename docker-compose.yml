@@ -24,7 +24,7 @@ services:
       context: .
       dockerfile: ./server/Dockerfile
     ports:
-      - "3000:3000"
+      - "8000:8000"
     environment:
       DATABASE_URL: postgres://your_user:your_password@postgres:5432/your_database
     depends_on:
@@ -33,4 +33,3 @@ volumes:
   pgdata:
   dbeaver-data:
   dbeaver-plugins:
-
