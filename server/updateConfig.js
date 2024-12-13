@@ -10,34 +10,31 @@ const __dirname = path.dirname(__filename);
 const filePath = path.join(__dirname, 'configuration.json');
 
 export const updateConfig = (message) => {
-    console.log("Updating configuration with message:", message);
-    fs.readFile(filePath, 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading the file:', err);
-            return;
-        }
-    
-        try {
-            const config = JSON.parse(data);
-            config.welcomeMessage = message; // Modify the welcome message
-    
-            fs.writeFile(filePath, JSON.stringify(config, null, 2), (err) => {
-                if (err) {
-                    console.error('Error writing to the file:', err);
-                } else {
-                    console.log('Configuration updated successfully.');
-                    fs.readFile(filePath, 'utf8', (readErr, updatedData) => {
-                        if (readErr) {
-                            console.error('Error reading updated file:', readErr);
-                        } else {
-                            console.log('Updated File Content:', updatedData);
-                        }
-                    });
-                }
-            });
-        } catch (parseErr) {
-            console.error('Error parsing JSON:', parseErr);
-        }
-    });
-}
+    try {
+        fs.readFile(filePath, 'utf8', (err, data) => {
+            if (err) {
+                throw new Error(`Error reading the file: ${err.message}`);
+            }
+            try {
+                const config = JSON.parse(data);
+                config.welcomeMessage = message; // Modify the welcome message
 
+                fs.writeFile(filePath, JSON.stringify(config, null, 2), (err) => {
+                    if (err) {
+                        throw new Error(`Error writing to the file: ${err.message}`);
+                    } else {
+                        fs.readFile(filePath, 'utf8', (readErr) => {
+                            if (readErr) {
+                                throw new Error(`Error reading updated file: ${readErr.message}`);
+                            }
+                        });
+                    }
+                });
+            } catch (parseErr) {
+                throw new Error(`Error parsing JSON: ${parseErr.message}`);
+            }
+        });
+    } catch (error) {
+        throw error; // Rethrow the error for higher-level handling
+    }
+};
